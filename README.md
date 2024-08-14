@@ -34,11 +34,14 @@ Extensive documentation on the SDI-12 functions and classes is available here:  
     - [Renaming Notice](#renaming-notice)
   - [Getting Started](#getting-started)
   - [Origins and Inherited Limitations](#origins-and-inherited-limitations)
-  - [Compatibility Considerations](#compatibility-considerations)
+  - [Supported Boards](#supported-boards)
+    - [Tested Boards](#tested-boards)
+    - [Untested Boards](#untested-boards)
+    - [Unsupported Boards](#unsupported-boards)
+    - [Usable Pins](#usable-pins)
   - [Variants and Branches](#variants-and-branches)
     - [EnviroDIY\_SDI12](#envirodiy_sdi12)
     - [EnviroDIY\_SDI12\_PCINT3](#envirodiy_sdi12_pcint3)
-    - [EnviroDIY\_SDI12\_ExtInts](#envirodiy_sdi12_extints)
   - [Contribute](#contribute)
   - [License](#license)
   - [Credits](#credits)
@@ -61,11 +64,14 @@ Full details on the library functionality can be found on github pages: <https:/
 
 This library was developed from the [SoftwareSerial](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/SoftwareSerial) library that is a built-in [standard Arduino library](https://www.arduino.cc/en/Reference/Libraries).
 It was further modified to use a timer to improve read stability and decrease the amount of time universal interrupts are disabled using logic from [NeoSWSerial](https://github.com/SlashDevin/NeoSWSerial).
+In August of 2024, the [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt) library was made a required dependency for this library for AVR boards.
 
-The most obvious "limitation" is that this library will conflict with all other libraries that make use of pin change interrupts.
+The most obvious "limitation" is that this library will conflict with all other libraries that make use of pin change interrupts on **AVR** boards.
 You will be unable to compile them together.
-Some other libraries using pin change interrupts include [SoftwareSerial](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/SoftwareSerial), [NeoSWSerial](https://github.com/SlashDevin/NeoSWSerial), [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt/), [PinChangeInt](https://playground.arduino.cc/Main/PinChangeInt), [Servo](https://www.arduino.cc/en/Reference/Servo), and quite a number of other libraries.
+Some other libraries using pin change interrupts include [SoftwareSerial](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/SoftwareSerial), [NeoSWSerial](https://github.com/SlashDevin/NeoSWSerial), [PinChangeInt](https://playground.arduino.cc/Main/PinChangeInt), [Servo](https://www.arduino.cc/en/Reference/Servo), and quite a number of other libraries.
 See the notes under [Variants and Branches](https://github.com/EnviroDIY/Arduino-SDI-12#variants-and-branches) below for advice in using this library in combination with such libraries.
+
+The one exception for pin change libraries is [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt), which this library depends on.
 
 Another non-trivial, but hidden limitation is that _all_ interrupts are disabled during most of the transmission of each character, which can interfere with other processes.
 That includes other pin-change interrupts, clock/timer interrupts, external interrupts, and every other type of processor interrupt.
@@ -77,22 +83,46 @@ There will be no obvious compile error, but because SDI-12 and the tone library 
 All 8MHz AVR boards will also have unresolvable prescaler conflicts with [NeoSWSerial](https://github.com/SlashDevin/NeoSWSerial).
 The pre-scaler values needed for the SDI-12 functionality are set in the begin() function and reset to their original values in the end() function.
 
-## Compatibility Considerations<!-- {#mainpage_compatibility} -->
+## Supported Boards<!-- {#mainpage_supported} -->
 
-This library has been tested with an Arduino Uno (AtMega328p), EnviroDIY Mayfly (AtMega1284p), Adafruit Feather 32u4 (AtMega32u4, identical to Arduino Leonardo), an Adafruit Feather M0 (SAMD21G18, identical to Arduino Zero), the ESP8266, and the ESP32.
-It should also work on an Arduino Mega (AtMega2560), Gemma/AtTiny board, and most other AVR processors  running on the Arduino framework.
+### Tested Boards
 
-The Arduino Due, Arduino 101, and Teensy boards are not supported at this time.
+This library has been tested and verified for:
+
+- Arduino Uno (AtMega328p)
+- EnviroDIY Mayfly (AtMega1284p)
+- Adafruit Feather 32u4 (AtMega32u4, identical to Arduino Leonardo)
+- Seeeduino Mega (AtMega 12850)
+- Adafruit Feather M0 (SAMD21G18, identical to Arduino Zero)EnviroDIY Stonefly (SAMD51N19A)
+- Adafruit Feather M0 (SAMD51J19A)
+- Adafruit Feather Huzzah (ESP12S/ESP8266)
+- Adafruit Feather Huzzah32 (ESP-WROOM-32/ESP32)
+
+### Untested Boards
+
+Other untested boards that _should_ work:
+
+- Arduino Mega (AtMega2560)
+- Adafruit Gemma/AtTiny
+- Most other AVR processors
+- Other flavors of ESP8266 and ESP32
+- Arduino framework boards with clock speeds over ~48MHz
+
+### Unsupported Boards
+
+These boards are currently unsupported.
 If you are interested in adding support for those boards, please send pull requests.
+
+- Arduino Due
+- Arduino 101
+- Teensy boards with speeds <48Mhz
+
+### Usable Pins
 
 Due to the use of pin change interrupts, not all data pins are available for use with this SDI-12 library.
 Pin availability depends on the micro-controller.
-These pins will work on those processors:
 
-This library requires the use of pin change interrupts (PCINT).
-
-Not all Arduino boards have the same pin capabilities.
-The known compatibile pins for common variants are shown below:
+For AVR boards, the ["Bestiary" of the EnableInterrupt library](https://github.com/GreyGnome/EnableInterrupt?tab=readme-ov-file#pin--port-bestiary) is one of the best lists of usable pins.
 
 **AtMega328p / Arduino Uno:**
 
@@ -110,9 +140,13 @@ The known compatibile pins for common variants are shown below:
 
 - 8, 9, 10, 11, 14 (MISO), 15 (SCK), 16 (MOSI)
 
-**SAMD21G18 / Arduino Zero:**
+**SAMD21xxx / Arduino Zero:**
 
 - Any pin (except 4 on the zero)
+
+**SAMD51xxx / Arduino Zero:**
+
+- Any pin
 
 **ESP8266:**
 
@@ -142,18 +176,6 @@ It's been cropped to only control interrupt vector 3, or PCINT3 (D), which on th
 It is designed to be compatible with [EnviroDIY_SoftwareSerial_PCINT12](https://github.com/EnviroDIY/SoftwareSerial_PCINT12) library (which controls interrupt vectors PCINT1 (B) & PCINT2 (C) / Mayfly pins D08-D15 & D16-D23) and [EnviroDIY PcInt PCINT0](https://github.com/EnviroDIY/PcInt_PCINT0) (which controls interrupt vectors PCINT0 (A) / Mayfly pins D24-D31/A0-A7).
 Note that different AtMega1284p boards have a different mapping from the physical PIN numbers to the listed digital PIN numbers that are printed on the board.
 One of the most helpful lists of pins and interrupts vectors is in the the [Pin/Port Bestiary wiki page for the Enable Interrupt library](https://github.com/GreyGnome/EnableInterrupt/wiki/Usage#PIN__PORT_BESTIARY).
-
-### EnviroDIY_SDI12_ExtInts<!-- {#mainpage_extints} -->
-
-EnviroDIY_SDI12_ExtInts is the ExtInt branch of this repository.
-It doesn't control any of the interrupts, but instead relies on an external interrupt management library (like [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt)) to assign the SDI-12 receive data function to the right pin.
-This is the least stable because there's some extra delay because the external library is involved, but the use of timers in the SDI-12 library greatly increases it's stability.
-It's also the easiest to get working in combination with any other pin change interrupt based library.
-It can be paired with the [EnviroDIY_SoftwareSerial_ExtInts](https://github.com/EnviroDIY/SoftwareSerial_ExternalInts) libraries (which is, by the way, extremely unstable).
-
-If you would like to use a different pin change interrupt library, uncomment the line `#define SDI12_EXTERNAL_PCINT` in SDI12.h and recompile the library.
-Then, in your own code call `SDI12::handleInterrupt()` as the interrupt for the SDI12 pin using the other interrupt library.
-Example j shows doing this in GreyGnome's [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt) library.
 
 ## Contribute<!-- {#mainpage_contribute} -->
 

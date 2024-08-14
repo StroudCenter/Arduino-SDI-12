@@ -28,8 +28,7 @@
   - Shows code for an Arduino-based USB dongle to translate between SDI-12 and a PC
   - [GitHub](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/i_SDI-12_interface)
 - Example J <!--! @subpage example_j_page -->
-  - Shows how to use an external PCInt library to call the interrupts for this library.
-  - [GitHub](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/j_external_pcint_library)
+  - Example J has been deprecated
 - Example K <!--! @subpage example_k_page -->
   -  Shows how to request concurrent measurements
   - [GitHub](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/k_concurrent_logger)

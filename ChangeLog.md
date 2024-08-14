@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **BREAKING** Made [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt) a required dependency for AVR boards.
+
 - Added python version to GitHub actions (for PlatformIO)
 - Switched to reusable workflows for GitHub actions
 - Consolidated timer prescaler math

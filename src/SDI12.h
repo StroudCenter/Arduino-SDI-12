@@ -235,8 +235,10 @@ enum LookaheadMode {
 
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && not defined(SDI12_INTERNAL_PCINT)
 // Unless we're forcing use of internal interrupts, use EnableInterrupt for AVR boards
-#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
-#include <EnableInterrupt.h>     // To handle external and pin change interrupts
+/// Required define for Enable Interrupts prevent compiler/linker crashes
+#define LIBCALL_ENABLEINTERRUPT
+// To handle external and pin change interrupts
+#include <EnableInterrupt.h>
 
 #elif not defined(__AVR__) && not defined(ARDUINO_ARCH_AVR)
 // For compatibility with non AVR boards, we need these macros

@@ -15,11 +15,3 @@ jobs:
     with:
       boards_to_build: 'mayfly,uno,megaatmega2560,leonardo,zeroUSB,arduino_nano_esp32,feather328p,feather32u4,adafruit_feather_m0,adafruit_feather_m4,huzzah,featheresp32,esp32-c3-devkitm-1,esp32-s3-devkitm-1'
     secrets: inherit
-
-
-  build_ext_ints:
-    name: Build the External Interrupt Example
-    runs-on: ubuntu-latest
-    if: ${{ ! contains(github.event.head_commit.message, 'ci skip') }}
-    env:
-      PLATFORMIO_BUILD_CACHE_DIR: ~/.platformio/caches

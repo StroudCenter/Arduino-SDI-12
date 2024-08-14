@@ -14,7 +14,6 @@ jobs:
     uses: EnviroDIY/workflows/.github/workflows/build_examples.yaml@main
     with:
       boards_to_build: 'mayfly,uno,megaatmega2560,leonardo,zeroUSB,arduino_nano_esp32,feather328p,feather32u4,adafruit_feather_m0,adafruit_feather_m4,huzzah,featheresp32,esp32-c3-devkitm-1,esp32-s3-devkitm-1'
-      examples_to_build: 'examples/a_wild_card,examples/b_address_change,examples/c_check_all_addresses,examples/d_simple_logger,examples/e_continuous_measurement,examples/f_basic_data_request,examples/g_terminal_window,examples/h_SDI-12_slave_implementation,examples/i_SDI-12_interface,examples/k_concurrent_logger,examples/l_verify_crc'
     secrets: inherit
 
 
@@ -24,16 +23,3 @@ jobs:
     if: ${{ ! contains(github.event.head_commit.message, 'ci skip') }}
     env:
       PLATFORMIO_BUILD_CACHE_DIR: ~/.platformio/caches
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PlatformIO
-        uses: EnviroDIY/setup-platformio-action@v1.0.2
-
-      - name: Build PlatformIO examples
-        env:
-          PLATFORMIO_BUILD_FLAGS: -D SDI12_EXTERNAL_PCINT
-          PLATFORMIO_CI_SRC: examples/j_external_pcint_library
-        run: pio ci --board=mayfly --board=uno --board=megaatmega2560 --board=leonardo --board=zeroUSB --board=feather328p --board=feather32u4 --board=adafruit_feather_m0 --lib="." --project-option="lib_deps=greygnome/EnableInterrupt@^1.1.0"

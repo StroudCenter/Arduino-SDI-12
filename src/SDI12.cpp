@@ -314,7 +314,10 @@ uint8_t SDI12::parity_even_bit(uint8_t v) {
 
 // a helper function to switch pin interrupts on or off
 void SDI12::setPinInterrupts(bool enable) {
-#if defined(__AVR__) && not defined(SDI12_EXTERNAL_PCINT)
+  // If we're using this library on an AVR board without the Enable Interrupts
+  // dependency
+  // NOTE: NOT RECOMMENDED
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && defined(SDI12_INTERNAL_PCINT)
   if (enable) {
     // Enable interrupts on the register with the pin of interest
     *digitalPinToPCICR(_dataPin) |= (1 << digitalPinToPCICRbit(_dataPin));
@@ -332,20 +335,16 @@ void SDI12::setPinInterrupts(bool enable) {
     }
     // We don't detach the function from the interrupt for AVR processors
   }
-  // if using AVR with external interrupts, do nothing
-#elif defined(__AVR__)
-  if (enable) {
-    return;
-  } else {
-    return;
-  }
-// for other boards (SAMD/Espressif/??) use the attachInterrupt function
 #else
-  // Merely need to attach the interrupt function to the pin
-  if (enable) attachInterrupt(digitalPinToInterrupt(_dataPin), handleInterrupt, CHANGE);
-  // Merely need to detach the interrupt function from the pin
+  // Use the enableInterrupt function to attach the interrupt to the pin
+  // For AVR boards, this is defined in the EnableInterrupt library
+  // For other boards, this is defined in SDI12.h as a rename for attachInterrupt
+  if (enable) enableInterrupt(_dataPin, handleInterrupt, CHANGE);
+  // Use the disableInterrupt function to detach the interrupt function from the pin
+  // For AVR boards, this is defined in the EnableInterrupt library
+  // For other boards, this is defined in SDI12.h as a rename for detachInterrupt
   else
-    detachInterrupt(digitalPinToInterrupt(_dataPin));
+    disableInterrupt(_dataPin);
 #endif
 }
 
@@ -843,40 +842,34 @@ void SDI12::charToBuffer(uint8_t c) {
   }
 }
 
-// Define AVR interrupts
+// Define AVR interrupts, if forcing the use of internal interrupts
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && defined(SDI12_INTERNAL_PCINT)
+
 // Check if the various interrupt vectors are defined.  If they are the ISR is
 // instructed to call handleInterrupt() when they trigger.
-
-#if defined __AVR__  // Only AVR processors use interrupts like this
-
-#ifdef SDI12_EXTERNAL_PCINT
-// Client code must call SDI12::handleInterrupt() in PCINT handler for the data pin
-#else
 
 #if defined(PCINT0_vect)
 ISR(PCINT0_vect) {
   SDI12::handleInterrupt();
 }
-#endif
+#endif  // PCINT0_vect
 
 #if defined(PCINT1_vect)
 ISR(PCINT1_vect) {
   SDI12::handleInterrupt();
 }
-#endif
+#endif  // PCINT1_vect
 
 #if defined(PCINT2_vect)
 ISR(PCINT2_vect) {
   SDI12::handleInterrupt();
 }
-#endif
+#endif  // PCINT2_vect
 
 #if defined(PCINT3_vect)
 ISR(PCINT3_vect) {
   SDI12::handleInterrupt();
 }
-#endif
+#endif  // PCINT3_vect
 
-#endif  // SDI12_EXTERNAL_PCINT
-
-#endif  // __AVR__
+#endif  // SDI12_INTERNAL_PCINT

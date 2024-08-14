@@ -220,6 +220,31 @@ enum LookaheadMode {
 };
 #endif  // defined(ESP32) || defined(ESP8266)
 
+
+#if not defined(SDI12_INTERNAL_PCINT) && not defined(SDI12_EXTERNAL_PCINT)
+/**
+ * @brief Define to use internal interrupt handing.
+ *
+ * On AVR boards, comment this out to use built-in pin-change interrupt handling rather
+ * than using
+ *
+ * @note There's an extra check to make sure SDI12_EXTERNAL_PCINT isn't defined twice.
+ */
+#define SDI12_EXTERNAL_PCINT
+#endif
+
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && not defined(SDI12_INTERNAL_PCINT)
+// Unless we're forcing use of internal interrupts, use EnableInterrupt for AVR boards
+#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
+#include <EnableInterrupt.h>     // To handle external and pin change interrupts
+
+#elif not defined(__AVR__) && not defined(ARDUINO_ARCH_AVR)
+// For compatibility with non AVR boards, we need these macros
+#define enableInterrupt(pin, userFunc, mode) \
+  attachInterrupt(digitalPinToInterrupt(pin), userFunc, mode)
+#define disableInterrupt(pin) detachInterrupt(digitalPinToInterrupt(pin))
+#endif
+
 /**
  * @brief The main class for SDI 12 instances
  */
@@ -1011,9 +1036,6 @@ class SDI12 : public Stream {
    * On espressif boards (ESP8266 and ESP32), the ISR must be stored in IRAM
    */
   static void handleInterrupt();
-
-  /** on AVR boards, uncomment to use your own PCINT ISRs */
-  // #define SDI12_EXTERNAL_PCINT
   /**@}*/
 };
 

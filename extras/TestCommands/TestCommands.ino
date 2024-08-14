@@ -4,7 +4,9 @@
  * @license This example is published under the BSD-3 license.
  * @author Sara Damiano <sdamiano@stroudcenter.org>
  */
-
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && not defined(SDI12_INTERNAL_PCINT)
+#include <EnableInterrupt.h>
+#endif
 #include <SDI12.h>
 
 #ifndef SDI12_DATA_PIN

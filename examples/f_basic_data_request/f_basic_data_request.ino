@@ -13,7 +13,9 @@
  *
  * Edited by Ruben Kertesz for ISCO Nile 502 2/10/2016
  */
-
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && not defined(SDI12_INTERNAL_PCINT)
+#include <EnableInterrupt.h>
+#endif
 #include <SDI12.h>
 
 /* connection information */

@@ -12,7 +12,9 @@
  * It requests information about the attached sensor, including its address and
  * manufacturer info.
  */
-
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && not defined(SDI12_INTERNAL_PCINT)
+#include <EnableInterrupt.h>
+#endif
 #include <SDI12.h>
 
 uint32_t serialBaud = 115200; /*!< The baud rate for the output serial port */

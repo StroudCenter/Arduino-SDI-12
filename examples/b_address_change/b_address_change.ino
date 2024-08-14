@@ -10,7 +10,9 @@
  * This is a simple demonstration of the SDI-12 library for arduino.
  * It discovers the address of the attached sensor and allows you to change it.
  */
-
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && not defined(SDI12_INTERNAL_PCINT)
+#include <EnableInterrupt.h>
+#endif
 #include <SDI12.h>
 
 uint32_t serialBaud = 57600;  /*!< The baud rate for the output serial port */

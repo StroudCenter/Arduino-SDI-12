@@ -12,7 +12,9 @@
  * until each is finished to query for results. This can be much faster than waiting for
  * each sensor when you have multiple sensor attached.
  */
-
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && not defined(SDI12_INTERNAL_PCINT)
+#include <EnableInterrupt.h>
+#endif
 #include <SDI12.h>
 
 /* connection information */

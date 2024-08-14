@@ -42,7 +42,9 @@
   "fb off : Disable feedback (characters not visible while typing; may be desired " \
   "for developers)\r\n"                                                             \
   "(else) : send command to SDI-12 bus"
-
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && not defined(SDI12_INTERNAL_PCINT)
+#include <EnableInterrupt.h>
+#endif
 #include <SDI12.h>
 
 /* connection information */

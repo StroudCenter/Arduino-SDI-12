@@ -26,7 +26,9 @@
  *  - Make an int variable for the "number of values to report" instead of the
  *    hard-coded 9s interspersed throughout the code
  */
-
+#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && not defined(SDI12_INTERNAL_PCINT)
+#include <EnableInterrupt.h>
+#endif
 #include <SDI12.h>
 
 int8_t dataPin       = 7;   /*!< The pin of the SDI-12 data bus */

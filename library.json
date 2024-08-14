@@ -25,8 +25,18 @@
   "license": "BSD-3-Clause",
   "frameworks": "arduino",
   "platforms": ["atmelavr", "atmelsam", "espressif8266", "espressif32"],
+  "headers": "SDI12.h",
+  "examples": ["examples/*/*.ino"],
+  "dependencies": [
+    {
+      "name": "EnableInterrupt",
+      "owner": "greygnome",
+      "version": "~1.1.0",
+      "frameworks": "arduino",
+      "platforms": ["atmelavr"]
+    }
+  ],
   "export": {
-    "exclude": ["doc/*"]
-  },
-  "examples": ["examples/*/*.ino"]
+    "exclude": ["docs/*"]
+  }
 }

@@ -27,7 +27,7 @@
 - Example I <!--! @subpage example_i_page -->
   - Shows code for an Arduino-based USB dongle to translate between SDI-12 and a PC
   - [GitHub](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/i_SDI-12_interface)
-- Example J <!--! @subpage example_j_page -->
+- Example J
   - Example J has been deprecated
 - Example K <!--! @subpage example_k_page -->
   -  Shows how to request concurrent measurements

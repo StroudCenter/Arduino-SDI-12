@@ -13,6 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **BREAKING** Made [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt) a required dependency for AVR boards.
 
+### Added
+
+### Removed
+
+### Fixed
+
+***
+
+## v2.2.0 (2024-08-14) [CRC and SAMD51 Support](https://github.com/EnviroDIY/Arduino-SDI-12/releases/tag/v2.2.0)
+
+### Changed
+
 - Added python version to GitHub actions (for PlatformIO)
 - Switched to reusable workflows for GitHub actions
 - Consolidated timer prescaler math

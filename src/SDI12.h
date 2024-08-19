@@ -182,9 +182,9 @@ typedef const __FlashStringHelper* FlashString;
  * character to finish.
  */
 #if F_CPU >= 48000000L
-#define SDI12_YIELD_MS 8
+#define SDI12_YIELD_MS 10
 #else
-#define SDI12_YIELD_MS 0
+#define SDI12_YIELD_MS 9
 #endif
 #endif
 
